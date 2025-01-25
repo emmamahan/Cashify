@@ -1,0 +1,103 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Receipt Scanner App</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <meta name="color-scheme" content="dark light">
+</head>
+<body class="bg-gray-900 text-gray-100 h-screen p-6">
+    <header class="mb-6">
+        <h1 class="text-3xl font-bold">Receipt Scanner App</h1>
+    </header>
+    <main class="flex flex-col items-center justify-center">
+        <section class="mb-6">
+            <h2 class="text-2xl font-bold mb-2">Scan Receipt</h2>
+            <input type="file" accept="image/*" id="receipt-input" class="block w-full text-gray-500 file:mr-4 file:py-2 file:px-4 file:rounded-full file:border-0 file:text-sm file:font-semibold file:bg-blue-50 file:text-blue-700 hover:file:bg-blue-100">
+        </section>
+        <section class="mb-6" id="purchases-section">
+            <h2 class="text-2xl font-bold mb-2">Purchases</h2>
+            <ul id="purchases-list" class="list-none p-0 m-0">
+                <!-- Purchases will be populated here -->
+            </ul>
+        </section>
+        <section class="mb-6" id="category-summary-section">
+            <h2 class="text-2xl font-bold mb-2">Category Summary</h2>
+            <ul id="category-summary-list" class="list-none p-0 m-0">
+                <!-- Category summary will be populated here -->
+            </ul>
+        </section>
+    </main>
+
+    <script>
+        // Hypothetical function to extract text from an image
+        function extractTextFromImage(image) {
+            // This function would use OCR (Optical Character Recognition) to extract text from the image
+            // For demonstration purposes, we'll return some sample data
+            return {
+                purchases: [
+                    { category: "Food", amount: 100.0 },
+                    { category: "Entertainment", amount: 50.0 },
+                    { category: "Shopping", amount: 200.0 },
+                ],
+            };
+        }
+
+        // Get the file input and purchases list elements
+        const receiptInput = document.getElementById("receipt-input");
+        const purchasesList = document.getElementById("purchases-list");
+        const categorySummaryList = document.getElementById("category-summary-list");
+
+        // Add an event listener to the file input
+        receiptInput.addEventListener("change", (e) => {
+            // Get the selected file
+            const file = e.target.files[0];
+
+            // Extract text from the image
+            const extractedText = extractTextFromImage(file);
+
+            // Populate the purchases list
+            purchasesList.innerHTML = "";
+            extractedText.purchases.forEach((purchase) => {
+                const listItem = document.createElement("li");
+                listItem.classList.add("flex", "justify-between", "mb-2", "p-2", "bg-gray-800", "rounded");
+                const categorySpan = document.createElement("span");
+                categorySpan.classList.add("text-lg");
+                categorySpan.textContent = purchase.category;
+                const amountSpan = document.createElement("span");
+                amountSpan.classList.add("text-lg");
+                amountSpan.textContent = `$${purchase.amount}`;
+                listItem.appendChild(categorySpan);
+                listItem.appendChild(amountSpan);
+                purchasesList.appendChild(listItem);
+            });
+
+            // Populate the category summary list
+            categorySummaryList.innerHTML = "";
+            const categorySummary = {};
+            extractedText.purchases.forEach((purchase) => {
+                if (!categorySummary[purchase.category]) {
+                    categorySummary[purchase.category] = 0;
+                }
+                categorySummary[purchase.category] += purchase.amount;
+            });
+            const totalAmount = extractedText.purchases.reduce((acc, purchase) => acc + purchase.amount, 0);
+            Object.keys(categorySummary).forEach((category) => {
+                const percentage = (categorySummary[category] / totalAmount) * 100;
+                const listItem = document.createElement("li");
+                listItem.classList.add("flex", "justify-between", "mb-2", "p-2", "bg-gray-800", "rounded");
+                const categorySpan = document.createElement("span");
+                categorySpan.classList.add("text-lg");
+                categorySpan.textContent = category;
+                const percentageSpan = document.createElement("span");
+                percentageSpan.classList.add("text-lg");
+                percentageSpan.textContent = `${percentage.toFixed(2)}%`;
+                listItem.appendChild(categorySpan);
+                listItem.appendChild(percentageSpan);
+                categorySummaryList.appendChild(listItem);
+            });
+        });
+    </script>
+</body>
+</html>
