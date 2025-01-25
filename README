@@ -1,0 +1,13 @@
+.venv/Scripts/activate (activate virtual environment)
+deactivate (deactivate)
+
+pip install {package-name}
+pip freeze > requirements.txt
+
+# pushing your contributions
+git add . 
+git commit -m "commit message"
+git push
+
+# pulling from master repo
+git pull
