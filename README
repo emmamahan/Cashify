@@ -1,3 +1,5 @@
+# TODOS
+
 .venv/Scripts/activate (activate virtual environment)
 deactivate (deactivate)
 
@@ -9,5 +11,14 @@ git add .
 git commit -m "commit message"
 git push
 
-# pulling from master repo
-git pull
+# pulling from master repo and then pushing changes to your own forked repository
+git fetch upstream
+git merge upstream/master (you'll get an cmd editor, press the "i" key, write something, esc and :wq)
+git push
+
+                                    <- (pull request on github)
+emma's master repository (upstream) -> forked copy of emma's repository (you)
+                    |                     |      ^
+                    |                     v      | (push)
+                    ------------------->   your local machine 
+                         fetch upstream       
