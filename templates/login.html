@@ -1,0 +1,159 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Cashify - Login</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    colors: {
+                        'custom-burgundy': '#813745',
+                        'custom-pink': '#D36A7E',
+                        'custom-light-pink': '#F5B8BE',
+                        'custom-olive': '#827122',
+                        'custom-dark-olive': '#3E3A19',
+                        'emmas-favorite-color':'#03230a',
+                        'emmas-second-fav-color':"#f1e9e2"
+                    }
+                }
+            }
+        };
+    </script>
+    <meta name="color-scheme" content="dark light">
+</head>
+<body class="bg-emmas-favorite-color text-gray-100 flex items-center justify-center min-h-screen">
+    <div class="max-w-md w-full bg-custom-pink p-8 rounded-lg shadow-md">
+        <div class="text-center mb-8">
+            <img src="https://flowbite.com/docs/images/logo.svg" class="h-12 mx-auto mb-4" alt="Cashify Logo" />
+            <h1 class="text-3xl font-bold">Cashify Login</h1>
+        </div>
+        
+        <form>
+            <div class="mb-6">
+                <label for="email" class="block mb-2 text-sm font-medium">Email</label>
+                <input type="email" id="email" class="w-full px-3 py-2 text-gray-900 bg-white border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-custom-burgundy" required>
+            </div>
+            <div class="mb-6">
+                <label for="password" class="block mb-2 text-sm font-medium">Password</label>
+                <input type="password" id="password" class="w-full px-3 py-2 text-gray-900 bg-white border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-custom-burgundy" required>
+            </div>
+            <button type="submit" class="w-full bg-custom-burgundy text-white py-2 px-4 rounded-full hover:bg-opacity-90 transition duration-300">
+                Log In
+            </button>
+        </form>
+
+        <div class="mt-6 text-center">
+            <a href="#" id="openForgotPassword" class="text-sm hover:underline">Forgot password?</a>
+        </div>
+        
+        <div class="mt-8 text-center">
+            <p class="text-sm">Don't have an account? <a href="#" id="openSignUp" class="text-custom-burgundy hover:underline">Sign up</a></p>
+        </div>
+    </div>
+
+    <!-- Forgot Password Popup -->
+    <div id="forgotPasswordPopup" class="fixed inset-0 bg-emmas-favorite-color bg-opacity-50 overflow-y-auto h-full w-full hidden">
+        <div class="relative top-20 mx-auto p-5 border w-96 shadow-lg rounded-md bg-custom-pink">
+            <div class="mt-3 text-center">
+                <h3 class="text-lg leading-6 font-medium text-white">Forgot Password</h3>
+                <button class="absolute top-0 right-0 mt-4 mr-4 text-white hover:text-custom-light-pink" onclick="togglePopup('forgotPasswordPopup')">
+                    <svg class="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"></path>
+                    </svg>
+                </button>
+                <div class="mt-2 px-7 py-3">
+                    <input type="email" id="forgotPasswordEmail" class="w-full px-3 py-2 border rounded-md text-gray-900" placeholder="Enter your email">
+                </div>
+                <div class="items-center px-4 py-3">
+                    <button id="sendResetLink" class="px-4 py-2 bg-custom-burgundy text-white text-base font-medium rounded-full w-full shadow-sm hover:bg-opacity-90 focus:outline-none focus:ring-2 focus:ring-custom-light-pink">
+                        Send Reset Link
+                    </button>
+                </div>
+            </div>
+        </div>
+    </div>    
+
+    <!-- Sign Up Popup -->
+    <div id="signUpPopup" class="fixed inset-0 bg-emmas-favorite-color bg-opacity-50 overflow-y-auto h-full w-full hidden">
+        <div class="relative top-20 mx-auto p-5 border w-96 shadow-lg rounded-md bg-custom-pink">
+            <div class="mt-3 text-center">
+                <h3 class="text-lg leading-6 font-medium text-white">Sign Up</h3>
+                <button class="absolute top-0 right-0 mt-4 mr-4 text-white hover:text-custom-light-pink" onclick="togglePopup('signUpPopup')">
+                    <svg class="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"></path>
+                    </svg>
+                </button>
+                <div class="mt-2 px-7 py-3">
+                    <input type="text" id="signUpUsername" class="w-full px-3 py-2 border rounded-md mb-3 text-gray-900" placeholder="Username">
+                    <input type="email" id="signUpEmail" class="w-full px-3 py-2 border rounded-md mb-3 text-gray-900" placeholder="Email">
+                    <input type="password" id="signUpPassword" class="w-full px-3 py-2 border rounded-md text-gray-900" placeholder="Password">
+                </div>
+                <div class="items-center px-4 py-3">
+                    <button id="signUpButton" class="px-4 py-2 bg-custom-burgundy text-white text-base font-medium rounded-full w-full shadow-sm hover:bg-opacity-90 focus:outline-none focus:ring-2 focus:ring-custom-light-pink">
+                        Sign Up
+                    </button>
+                </div>
+            </div>
+        </div>
+    </div>    
+
+</body>
+
+<script>
+    function togglePopup(popupId) {
+        const popup = document.getElementById(popupId);
+        popup.classList.toggle('hidden');
+    }
+
+    document.getElementById('openForgotPassword').addEventListener('click', (e) => {
+        e.preventDefault();
+        togglePopup('forgotPasswordPopup');
+    });
+
+    document.getElementById('openSignUp').addEventListener('click', (e) => {
+        e.preventDefault();
+        togglePopup('signUpPopup');
+    });
+
+    document.getElementById('sendResetLink').addEventListener('click', () => {
+        const email = document.getElementById('forgotPasswordEmail').value;
+        // Send request to server
+        fetch('/forgot-password', {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json',
+            },
+            body: JSON.stringify({ email: email }),
+        })
+        .then(response => response.json())
+        .then(data => {
+            alert(data.message);
+            togglePopup('forgotPasswordPopup');
+        });
+    });
+
+    document.getElementById('signUpButton').addEventListener('click', () => {
+        const username = document.getElementById('signUpUsername').value;
+        const email = document.getElementById('signUpEmail').value;
+        const password = document.getElementById('signUpPassword').value;
+        // Send request to server
+        fetch('/signup', {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json',
+            },
+            body: JSON.stringify({ username: username, email: email, password: password }),
+        })
+        .then(response => response.json())
+        .then(data => {
+            alert(data.message);
+            togglePopup('signUpPopup');
+        });
+    });
+</script>
+
+
+</html>
