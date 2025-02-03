@@ -5,39 +5,63 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Receipt Scanner App</title>
     <script src="https://cdn.tailwindcss.com"></script>
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    colors: {
+                        'custom-burgundy': '#813745',
+                        'custom-pink': '#D36A7E',
+                        'custom-light-pink': '#F5B8BE',
+                        'custom-olive': '#827122',
+                        'custom-dark-olive': '#3E3A19',
+                        'emmas-favorite-color':'#03230a',
+                        'emmas-second-fav-color':"#f1e9e2"
+                    }
+                }
+            }
+        };
+    </script>
     <meta name="color-scheme" content="dark light">
 </head>
-<body class="bg-gray-900 text-gray-100 h-screen p-6">
+<body class="bg-emmas-favorite-color text-gray-100 min-h-screen p-6 flex flex-col">
     <header class="mb-6">
+        <h1 class="text-3xl font-bold text-center">Receipt Scanner App</h1>
         <h1 span style="text-align: center;" class="text-3xl font-bold">Receipt Scanner App</h1> 
     </header>
-    <main class="flex flex-col items-center justify-center">
+    <main class="flex-grow grid grid-cols-12 grid-rows-6 gap-4">
+        <div class="col-span-6 row-span-4 bg-custom-burgundy p-4 text-white">Quadrant 1</div>
+        <div class="col-span-6 row-span-4 bg-custom-pink p-4 text-white">Quadrant 2</div>
+
+
+        <!-- Graph will be populated here -->
+        <div class="col-span-6 row-span-4 bg-custom-olive p-4 text-white">
+        </div>
+
+        <!-- Graph will be populated here -->
+        <div class="col-span-6 row-span-4 bg-custom-light-pink p-4 text-black">
+        </div>
+        <!--
         <section class="mb-6">
             <h2 span style="text-align: center;" class="text-2xl font-bold mb-2">Scan Receipt</h2>
             <input type="file" accept="image/*" id="receipt-input" class="block w-full text-gray-500 file:mr-4 file:py-2 file:px-4 file:rounded-full file:border-0 file:text-sm file:font-semibold file:bg-blue-50 file:text-blue-700 hover:file:bg-blue-100">
         </section> <br>
         <section class="mb-6" id="purchases-section" style="width:15%;">
             <h2 class="text-2xl font-bold mb-2" style="text-align:center;">Purchases</h2>
-            <ul id="purchases-list" class="list-none p-0 m-0">
+            <ul id="purchases-list" class="list-none p-0 m-0"> -->
                 <!-- Purchases will be populated here -->
-            </ul> <br>
+ <!--           </ul> <br>
         </section>
         <section class="mb-6" id="category-summary-section">
             <h2 class="text-2xl font-bold mb-2">Category Summary</h2>
-            <ul id="category-summary-list" class="list-none p-0 m-0">
-                <!-- Category summary will be populated here -->
+            <ul id="category-summary-list" class="list-none p-0 m-0"> -->
+    <!--            </ul>
             </ul>
         </section>
-
-        <div class="piechart"></div>
-        <div class="image-container">
-            <img src="CashifyNEW.jpg" alt="Image">
-            <button class="button">Scan</button>
-          </div>
-
     </main>
 
     <script>
+        
         // Hypothetical function to extract text from an image
         function extractTextFromImage(image) {
             // This function would use OCR (Optical Character Recognition) to extract text from the image
