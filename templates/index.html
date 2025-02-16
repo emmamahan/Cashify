@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="en" class="h-full">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -14,312 +14,109 @@
                         'custom-pink': '#D36A7E',
                         'custom-light-pink': '#F5B8BE',
                         'custom-olive': '#827122',
-                        'custom-dark-olive': '#3E3A19',
+                        'custom-dark-pink': '#3E3A19',
                         'emmas-favorite-color':'#03230a',
-                        'emmas-second-fav-color':"#f1e9e2"
+                        'emmas-second-fav-color':'#f1e9e2'
                     }
                 }
             }
         };
     </script>
-    <style>
-        .scrollbar-hide::-webkit-scrollbar {
-            display: none;
-        }
-        
-        .scrollbar-hide {
-            -ms-overflow-style: none;
-            scrollbar-width: none;
-        }
-    </style>
-
-    <meta name="color-scheme" content="dark light">
 </head>
-<body class="bg-emmas-favorite-color text-gray-100">
-    <div class="container mx-auto px-4">
-        <header class="py-6">
-            <h1 class="text-3xl font-bold text-center">
-                <a href="https://google.com" class="flex items-center mb-4 sm:mb-0 space-x-3 rtl:space-x-reverse">
-                    <img src="https://flowbite.com/docs/images/logo.svg" class="h-8" alt="Cashify Logo" />
-                    <span class="self-center text-2xl font-semibold whitespace-nowrap dark:text-white">Cashify</span>
-                </a>
-            </h1>
-        </header>
-        <main class="grid grid-rows-12 grid-cols-12 gap-4 h-screen" style="height: 800px;">
-            <div class="col-span-7 row-span-5 bg-custom-light-pink p-4 text-black overflow-auto rounded-md" id="budget">
-                Budget
-            </div>
-            <div class="col-span-5 row-span-9 bg-custom-pink p-4 text-white overflow-hidden rounded-md" id="menu">
-                <div class="h-full w-full mx-auto bg-white p-6 rounded-lg shadow-md overflow-y-auto scrollbar-hide">
-                    <h2 class="text-center text-gray-900 font-bold text-xl mb-4">MENU</h2>
-                    
-                    <div class="space-y-4 divide-y-2 divide-dotted divide-gray-300">
-                        <div class="pt-4 first:pt-0">
-                            <button type="button" class="w-full text-gray-900 bg-white hover:bg-gray-100 focus:ring-4 focus:ring-gray-100 font-medium text-sm px-5 py-2.5 transition-all duration-300 ease-in-out transform hover:scale-105">
-                                settings
-                            </button>
-                        </div>
-                        
-                        <div class="pt-4">
-                            <div id="dropzone" class="border-2 border-dashed border-gray-300 rounded-lg p-6 text-center">
-                                <p>Drag and drop receipts here or</p>
-                                <input type="file" id="fileInput" multiple accept="image/*" class="hidden">
-                                <button id="uploadButton" class="mt-2 px-4 py-2 bg-blue-500 text-white rounded-md">Upload Receipts</button>
-                            </div>
-                            
-                            <div id="submitDiscardButtons" class="hidden space-x-2">
-                                <button id="submitButton" type="button" class="w-1/2 text-white bg-green-500 hover:bg-green-600 focus:ring-4 focus:ring-green-300 font-medium text-sm px-5 py-2.5 transition-all duration-300 ease-in-out transform hover:scale-105">
-                                    SUBMIT
-                                </button>
-                                <button id="discardButton" type="button" class="w-1/2 text-white bg-red-500 hover:bg-red-600 focus:ring-4 focus:ring-red-300 font-medium text-sm px-5 py-2.5 transition-all duration-300 ease-in-out transform hover:scale-105">
-                                    DISCARD
-                                </button>
-                            </div>
-                        </div>
-                        
-                        <div class="pt-4">
-                            <button type="button" class="w-full text-gray-900 bg-white hover:bg-gray-100 focus:ring-4 focus:ring-gray-100 font-medium text-sm px-5 py-2.5 transition-all duration-300 ease-in-out transform hover:scale-105">
-                                logout
-                            </button>
-                        </div>
-                    </div>
-                </div>
-            </div>
-            <div class="col-span-7 row-span-7 bg-custom-olive p-4 text-white overflow-auto rounded-md" id="piegraph">
 
-            </div>
-            <div class="col-span-5 row-span-3 bg-custom-burgundy p-4 text-white overflow-auto rounded-md" id="overview">
-                <div class="flip-counter">
-                    <div class="digit">
-                      <div class="top">0</div>
-                      <div class="bottom">0</div>
-                    </div>
-                </div>                  
-            </div>
-        </main>
-    </div>
+<body class="flex flex-col h-full min-h-screen bg-[#fb9ebd]">
 
-    <script>
-        
-        // // Hypothetical function to extract text from an image
-        // function extractTextFromImage(image) {
-        //     // This function would use OCR (Optical Character Recognition) to extract text from the image
-        //     // For demonstration purposes, we'll return some sample data
-        //     return {
-        //         purchases: [
-        //             { category: "Food", amount: 100.0 },
-        //             { category: "Entertainment", amount: 50.0 },
-        //             { category: "Shopping", amount: 200.0 },
-        //         ],
-        //     };
-        // }
-
-        // // Get the file input and purchases list elements
-        // const receiptInput = document.getElementById("receipt-input");
-        // const purchasesList = document.getElementById("purchases-list");
-        // const categorySummaryList = document.getElementById("category-summary-list");
-
-        // // Add an event listener to the file input
-        // receiptInput.addEventListener("change", (e) => {
-        //     // Get the selected file
-        //     const file = e.target.files[0];
-
-        //     // Extract text from the image
-        //     const extractedText = extractTextFromImage(file);
-
-        //     // Populate the purchases list
-        //     purchasesList.innerHTML = "";
-        //     extractedText.purchases.forEach((purchase) => {
-        //         const listItem = document.createElement("li");
-        //         listItem.classList.add("flex", "justify-between", "mb-2", "p-2", "bg-gray-800", "rounded");
-        //         const categorySpan = document.createElement("span");
-        //         categorySpan.classList.add("text-lg");
-        //         categorySpan.textContent = purchase.category;
-        //         const amountSpan = document.createElement("span");
-        //         amountSpan.classList.add("text-lg");
-        //         amountSpan.textContent = `$${purchase.amount}`;
-        //         listItem.appendChild(categorySpan);
-        //         listItem.appendChild(amountSpan);
-        //         purchasesList.appendChild(listItem);
-        //     });
-
-        //     // Populate the category summary list
-        //     categorySummaryList.innerHTML = "";
-        //     const categorySummary = {};
-        //     extractedText.purchases.forEach((purchase) => {
-        //         if (!categorySummary[purchase.category]) {
-        //             categorySummary[purchase.category] = 0;
-        //         }
-        //         categorySummary[purchase.category] += purchase.amount;
-        //     });
-        //     const totalAmount = extractedText.purchases.reduce((acc, purchase) => acc + purchase.amount, 0);
-        //     Object.keys(categorySummary).forEach((category) => {
-        //         const percentage = (categorySummary[category] / totalAmount) * 100;
-        //         const listItem = document.createElement("li");
-        //         listItem.classList.add("flex", "justify-between", "mb-2", "p-2", "bg-gray-800", "rounded");
-        //         const categorySpan = document.createElement("span");
-        //         categorySpan.classList.add("text-lg");
-        //         categorySpan.textContent = category;
-        //         const percentageSpan = document.createElement("span");
-        //         percentageSpan.classList.add("text-lg");
-        //         percentageSpan.textContent = `${percentage.toFixed(2)}%`;
-        //         listItem.appendChild(categorySpan);
-        //         listItem.appendChild(percentageSpan);
-        //         categorySummaryList.appendChild(listItem);
-        //     });
-        // });
-
-        document.addEventListener('DOMContentLoaded', function() {
-            const scanButton = document.getElementById('scanButton');
-            const submitDiscardButtons = document.getElementById('submitDiscardButtons');
-            const submitButton = document.getElementById('submitButton');
-            const discardButton = document.getElementById('discardButton');
-            const overviewDiv = document.getElementById('overview');
-            const budgetDiv = document.getElementById('budget');
-            const piegraphDiv = document.getElementById('piegraph');
-
-            let scannedItems = [];
-
-            scanButton.addEventListener('click', function() {
-                // Simulate file upload and scanning
-                fetch('/scan-receipt', {
-                    method: 'POST',
-                    body: new FormData() // In a real scenario, you'd append the file here
-                })
-                .then(response => response.json())
-                .then(data => {
-                    scannedItems = data.purchases;
-                    updateOverview(scannedItems);
-                    scanButton.classList.add('hidden');
-                    submitDiscardButtons.classList.remove('hidden');
-                });
-            });
-
-            submitButton.addEventListener('click', function() {
-                fetch('/submit-purchases', {
-                    method: 'POST',
-                    headers: {
-                        'Content-Type': 'application/json',
-                    },
-                    body: JSON.stringify({ purchases: scannedItems })
-                })
-                .then(response => response.json())
-                .then(data => {
-                    updateBudget(data.remainingBudget);
-                    updatePieGraph(data.categoryDistribution);
-                    resetScanUI();
-                });
-            });
-
-            discardButton.addEventListener('click', resetScanUI);
-
-            function updateOverview(items) {
-                overviewDiv.innerHTML = items.map(item => 
-                    `<div>${item.category}: $${item.amount}</div>`
-                ).join('');
-            }
-
-            function updateBudget(remainingBudget) {
-                budgetDiv.textContent = `Remaining Budget: $${remainingBudget}`;
-            }
-
-            function updatePieGraph(distribution) {
-                // Implement pie chart update logic here
-                // You might want to use a library like Chart.js for this
-            }
-
-            function resetScanUI() {
-                scanButton.classList.remove('hidden');
-                submitDiscardButtons.classList.add('hidden');
-                overviewDiv.innerHTML = '';
-                scannedItems = [];
-            }
-        });
-
-
-        const dropzone = document.getElementById('dropzone');
-        const fileInput = document.getElementById('fileInput');
-        const uploadButton = document.getElementById('uploadButton');
-
-        dropzone.addEventListener('dragover', (e) => {
-            e.preventDefault();
-            dropzone.classList.add('bg-gray-100');
-        });
-
-        dropzone.addEventListener('dragleave', () => {
-            dropzone.classList.remove('bg-gray-100');
-        });
-
-        dropzone.addEventListener('drop', (e) => {
-            e.preventDefault();
-            dropzone.classList.remove('bg-gray-100');
-            handleFiles(e.dataTransfer.files);
-        });
-
-        uploadButton.addEventListener('click', () => {
-            fileInput.click();
-        });
-
-        fileInput.addEventListener('change', (e) => {
-            handleFiles(e.target.files);
-        });
-
-        function handleFiles(files) {
-            for (let file of files) {
-                uploadReceipt(file);
-            }
-        }
-
-        function uploadReceipt(file) {
-            const formData = new FormData();
-            formData.append('user_id', currentUserId); // You need to set this when user logs in
-            formData.append('date', new Date().toISOString());
-            formData.append('total', '0'); // You would calculate this from the receipt
-            formData.append('receipt', file);
-
-            fetch('/upload_receipt', {
-                method: 'POST',
-                body: formData
-            })
-            .then(response => response.json())
-            .then(data => {
-                console.log(data.message);
-                // Update UI to show uploaded receipt
-            })
-            .catch(error => console.error('Error:', error));
-        }
-
-
-    </script>
-</body>
-
-<footer class="bg-white rounded-lg shadow-sm dark:bg-gray-900 m-4">
-    <div class="w-full max-w-screen-xl mx-auto p-4 md:py-8">
-        <div class="sm:flex sm:items-center sm:justify-between">
-            <a href="https://google.com" class="flex items-center mb-4 sm:mb-0 space-x-3 rtl:space-x-reverse">
-                <img src="https://flowbite.com/docs/images/logo.svg" class="h-8" alt="Cashify Logo" />
-                <span class="self-center text-2xl font-semibold whitespace-nowrap dark:text-white">Cashify</span>
-            </a>
-            <ul class="flex flex-wrap items-center mb-6 text-sm font-medium text-gray-500 sm:mb-0 dark:text-gray-400">
-                <li>
-                    <a href="#" class="hover:underline me-4 md:me-6">About</a>
-                </li>
-                <li>
-                    <a href="#" class="hover:underline me-4 md:me-6">Privacy Policy</a>
-                </li>
-                <li>
-                    <a href="#" class="hover:underline me-4 md:me-6">Licensing</a>
-                </li>
-                <li>
-                    <a href="#" class="hover:underline">Contact</a>
-                </li>
-            </ul>
+    <!-- Header -->
+    <div class="py-4 bg-[#180e12] flex items-center px-8">
+        <div class="text-[#f16b98] text-2xl md:text-3xl lg:text-4xl font-bold font-['Kantumruy Pro']"><i>Cashify</i></div>
+        <div class="ml-auto flex space-x-6 md:space-x-8 text-[#f16b98] text-lg md:text-2xl lg:text-3xl font-bold font-['Harmattan']">
+            <div>Settings</div>
+            <div>Budget Planner</div>
+            <div>Receipts</div>
         </div>
-        <hr class="my-6 border-gray-200 sm:mx-auto dark:border-gray-700 lg:my-8" />
-        <span class="block text-sm text-gray-500 sm:text-center dark:text-gray-400">© 2025 <a href="https://google.com/" class="hover:underline">Cashify</a>. All Rights Reserved.</span>
     </div>
-</footer>
 
+    <!-- Main Content (Full Height) -->
+    <div class="flex-grow flex justify-center">
+        <table class="w-full h-full table-fixed">
+            <tbody class="h-full">
+                <tr class="h-full">
+                    <!-- Left Section (60%) -->
+                    <td class="w-3/5 bg-[#F5DADF] shadow-lg h-full align-top p-6">
+                        <table class="w-full h-full">
+                            <thead>
+                                <tr class="text-center">
+                                    <th class="bg-[#FFFF] w-1/2 py-2 text-[#f16b98] text-xl font-bold font-['Kantumruy Pro']">Main Content</th>
+                                    <th class="bg-[#f6a9c3] w-1/2 py-2 text-[#f6fffd] text-xl font-bold font-['Kantumruy Pro']">Monthly Averages</th>
+                                </tr>
+                            </thead>
+                            <tbody class="h-full">
+                                <tr class="h-full">
+                                    <!--Category Totals-->
+                                    <td class="bg-[#FFFF] w-1/2 h-full align-top">
+                                        <ul id="category-totals" class="text-lg mt-2 space-y-2"></ul>
+                                    </td>
+                                    <!-- Pie Chart -->
+                                    <td class="bg-[#f6a9c3] w-1/2 h-full align-top relative">
+                                        <div class="absolute inset-0 flex items-center justify-center">
+                                            <div class="w-[90%] max-w-[300px] aspect-square rounded-full" 
+                                                 style="background-image: conic-gradient(pink 70deg, #EA638C 0 235deg, #89023E 0);">
+                                            </div>
+                                        </div>
+                                    </td>
+                                </tr>
+                            </tbody>
+                        </table>
+                    </td>
+                    
+                    <!-- Right Section (40%) -->
+                    <td class="w-2/5 bg-[#f6fffd] shadow-lg h-full align-top p-6 text-center">
+                        <div class="border-t border-black mt-0 mb-1"></div>
+                        <div class="text-[#1e1d1d] text-4xl font-bold font-['Kantumruy Pro']">Cashify</div>
+                        <div class="border-t border-black my-2"></div>
+        
+                        <!-- Barcode Image -->
+                        <div class="flex justify-center my-4">
+                            <img class="w-1/3 max-w-xs" src="{{ url_for('static', filename='images/barcode.png') }}" alt="Barcode">
+                        </div>
+                        
+        
+                        <div class="border-t border-black my-2"></div>
+                        <div class="text-[#1e1d1d] text-lg font-normal font-['Jaldi']">Budget Remaining:</div>
+                        <!-- Flipping Number Display -->
+                        <div class="flex justify-center items-center text-4xl font-bold mt-2">
+                            <span id="flip-number" class="relative inline-block w-[80px] h-[50px] text-center overflow-hidden">
+                                <span class="block absolute inset-0 transition-transform duration-500 ease-in-out">100</span>
+                            </span>
+                        </div>                        
+                        <div class="flex flex-col items-center">
+                            <div class="border-t border-black w-full mt-4 mb-6"></div>
+                            <!--Scan Button-->
+                            <input type="file" id="receiptInput" class="hidden" accept="image/*">
+                            <button onclick="document.getElementById('receiptInput').click();" 
+                                class="text-2xl text-[#f6fffd] bg-[#180e12] w-1/5 font-bold py-1 px-4 rounded">
+                                Scan
+                            </button>
+                            <div class="border-t border-black w-full mt-6 mb-2"></div>
+                        </div>
+                        <div class="text-[#1e1d1d] text-base font-normal font-['Jaldi']">Thank you!</div>
+                    </td>
+                </tr>
+            </tbody>
+        </table>
+    </div>
 
-
+    <!-- Footer (Always at Bottom) -->
+    <div class="py-3 bg-[#180e12] flex flex-col justify-center text-[#f16b98] px-8">
+        <div class="flex justify-end gap-4 md:gap-8 text-lg font-bold font-['Harmattan']">
+            <div>About</div>
+            <div>Privacy Policy</div>
+            <div>Licensing</div>
+            <div>Contact</div>
+        </div>
+        <div class="w-full border-t border-[#f16b98] mt-2"></div> 
+        <div class="mt-2 text-center text-sm md:text-base font-['Harmattan']">&copy 2025 Cashify. All Rights Reserved.</div>
+    </div>
+<script src="{{ url_for('static', filename='js/script.js') }}"></script>
+</body>
 </html>
