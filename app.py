@@ -6,6 +6,7 @@ import secrets
 import pytesseract
 from PIL import Image
 import io
+import re
 
 app = Flask(__name__)
 app.config["MONGO_URI"] = "mongodb://localhost:27017/cashify"
@@ -57,8 +58,10 @@ app.config['MAIL_PASSWORD'] = 'your-email-password'
 mail = Mail(app)
 
 # Route for scanning receipt
+
 @app.route('/scan-receipt', methods=['POST'])
 def scan_receipt():
+
     if 'file' not in request.files:
         return jsonify({"error": "No file provided"}), 400
 
@@ -66,85 +69,198 @@ def scan_receipt():
     img = Image.open(io.BytesIO(file.read()))
 
     text = pytesseract.image_to_string(img)
-    purchases = extract_purchases(text)
+    #print(text)
+    purchases = extract_items_from_receipt(text)
 
     return jsonify({"purchases": purchases})
 
-@app.route('/upload_receipt', methods=['POST'])
-def upload_receipt():
-    user_id = request.form['user_id']
-    date = request.form['date']
-    total = request.form['total']
-    file = request.files['receipt']
+def extract_items_from_receipt(text):
+    # Perform OCR on the image
+    # Process the extracted text to find items and prices
+    items = []
+    lines = text.split('\n')
+    for line in lines:
+        # Use regex to find item name and price
+        if "$" in line and "total" not in line.lower():
+            
+            name = re.sub(r'[^\w\s]|[\d]', '', line.split("$")[0].lower()).strip()
+            category = categorize_item(name)
+            price = line.split("$")[1].lower().strip()
+            try: price = float(price)
+            except: 
+                print(f"FAIL: {price}")
+                price = 0
+            print(name)
+            print(price)
+            items.append({"name": name, "price": price, "category": category})
     
-    if file:
-        filename = f"{user_id}_{date}_{file.filename}"
-        file.save(os.path.join('uploads', filename))
-        
-        conn = sqlite3.connect('cashify.db')
-        c = conn.cursor()
-        c.execute("INSERT INTO receipts (user_id, date, total, image_path) VALUES (?, ?, ?, ?)",
-                  (user_id, date, total, filename))
-        receipt_id = c.lastrowid
-        
-        # Here you would process the receipt image and extract items
-        # For demonstration, we'll add dummy items
-        items = [
-            ("Apples", 5.99, "Groceries"),
-            ("Milk", 3.49, "Groceries"),
-            ("Movie Ticket", 12.99, "Entertainment")
-        ]
-        
-        for item in items:
-            c.execute("INSERT INTO items (receipt_id, name, price, category) VALUES (?, ?, ?, ?)",
-                      (receipt_id, item[0], item[1], item[2]))
-        
-        conn.commit()
-        conn.close()
-        
-        return jsonify({"message": "Receipt uploaded successfully"}), 200
+    return items
+
+def categorize_item(name):
+    # This is a simple categorization function. You can expand it with more categories and items.
+    name = name.lower()
+    if any(food in name for food in [
+    "milk", "bread", "eggs", "cheese", "yogurt", "butter",
+    "apples", "bananas", "oranges", "tomatoes", "lettuce", "carrots",
+    "potatoes", "onions", "chicken", "ground beef", "pasta", "rice",
+    "cereal", "coffee", "tea", "sugar", "flour", "salt", "pepper",
+    "olive oil", "ketchup", "mustard", "mayonnaise", "peanut butter",
+    "jelly", "jam", "soup", "canned vegetables", "canned fruits",
+    "frozen pizza", "ice cream", "chips", "cookies", "soda", "juice",
+    "bacon", "sausage", "ham", "tuna", "salmon", "cajun shrimp",
+    "broccoli", "cauliflower", "spinach", "cucumber", "bell peppers",
+    "mushrooms", "garlic", "ginger", "lemons", "limes", "avocados",
+    "berries", "grapes", "melons", "pineapple", "nuts", "dried fruits",
+    "honey", "syrup", "salsa", "hummus", "guacamole", "tortillas",
+    "bagels", "muffins", "crackers", "oatmeal", "pancake mix",
+    "chocolate", "candy", "popcorn", "pretzels", "granola bars, burger, drinks", 
+    "cajun shrine", "iepossible burser", "soft drinks", "ribeye cheesesteak foo roll" # this is temporary
+    ]):
+        return 'Groceries'
+    elif any(household in name for household in [
+    "toilet paper", "paper towels", "tissues", "trash bags", "dish soap",
+    "hand soap", "laundry detergent", "fabric softener", "bleach",
+    "all-purpose cleaner", "glass cleaner", "floor cleaner", "sponges",
+    "scrub brushes", "mop", "broom", "dustpan", "vacuum bags",
+    "air freshener", "candles", "light bulbs", "batteries",
+    "aluminum foil", "plastic wrap", "sandwich bags", "freezer bags",
+    "food storage containers", "paper plates", "plastic cups", "napkins",
+    "toothpaste", "toothbrushes", "mouthwash", "dental floss",
+    "shampoo", "conditioner", "body wash", "bar soap", "lotion",
+    "deodorant", "razors", "shaving cream", "cotton swabs", "cotton balls",
+    "bandages", "first aid kit", "pain relievers", "allergy medicine",
+    "vitamins", "sunscreen", "insect repellent", "hand sanitizer",
+    "facial tissues", "toilet brush", "plunger", "shower curtain",
+    "laundry basket", "clothes hangers", "lint roller", "ironing board"]):
+        return 'Household'
+    elif any(clothing in name for clothing in [
+    "t-shirt", "shirt", "blouse", "sweater", "cardigan", "hoodie",
+    "jacket", "coat", "blazer", "jeans", "pants", "trousers", "shorts",
+    "skirt", "dress", "suit", "socks", "underwear", "bra", "undershirt",
+    "pajamas", "nightgown", "robe", "slippers", "shoes", "sneakers",
+    "boots", "sandals", "flip-flops", "heels", "flats", "loafers",
+    "belt", "tie", "scarf", "gloves", "mittens", "hat", "cap", "beanie",
+    "swimsuit", "bikini", "trunks", "leggings", "tights", "stockings",
+    "vest", "tank top", "polo shirt", "sweatshirt", "sweatpants",
+    "raincoat", "windbreaker", "parka", "overalls", "jumpsuit",
+    "uniform", "apron", "bow tie", "cummerbund", "camisole",
+    "lingerie", "boxers", "briefs", "pantyhose", "knee-highs",
+    "ankle socks", "crew socks", "dress shirt", "tunic", "poncho",
+    "shawl", "wrap", "cardigan", "bolero", "crop top", "halter top",
+    "turtleneck", "v-neck", "crew neck", "collared shirt"]):
+        return 'Clothing'
+    elif any(healthBeauty in name for healthBeauty in [
+    "shampoo", "conditioner", "body wash", "soap", "face wash", "moisturizer",
+    "lotion", "sunscreen", "deodorant", "antiperspirant", "perfume", "cologne",
+    "toothpaste", "toothbrush", "mouthwash", "dental floss", "lip balm",
+    "lipstick", "mascara", "eyeliner", "eyeshadow", "blush", "foundation",
+    "concealer", "powder", "bronzer", "highlighter", "makeup remover",
+    "nail polish", "nail polish remover", "cotton swabs", "cotton balls",
+    "hair gel", "hair spray", "hair dye", "hair brush", "comb", "hair ties",
+    "bobby pins", "razor", "shaving cream", "aftershave", "wax strips",
+    "tweezers", "scissors", "nail clippers", "emery board", "face mask",
+    "eye cream", "hand cream", "foot cream", "body scrub", "face scrub",
+    "toner", "serum", "acne treatment", "hand sanitizer", "bandages",
+    "first aid kit", "pain reliever", "antacid", "allergy medicine",
+    "vitamins", "supplements", "protein powder", "feminine hygiene products",
+    "condoms", "contact lens solution", "eye drops", "facial tissues",
+    "body spray", "dry shampoo", "face wipes", "body lotion", "hand soap",
+    "shaving gel", "beard oil", "hair mask", "face peel", "exfoliator",
+    "bath bombs", "bubble bath", "shower gel", "body mist", "face primer",
+    "setting spray", "brow pencil", "hair removal cream", "sunless tanner"]):
+        return 'Health & Beauty'
+    elif any(entertainment in name for entertainment in[
+    "movie ticket", "concert ticket", "theater ticket", "museum admission",
+    "amusement park pass", "zoo ticket", "aquarium ticket", "festival pass",
+    "book", "magazine", "newspaper", "comic book", "e-book",
+    "dvd", "blu-ray", "video game", "video game console", "board game",
+    "puzzle", "playing cards", "toy", "action figure", "doll",
+    "lego set", "model kit", "art supplies", "coloring book",
+    "musical instrument", "guitar strings", "sheet music",
+    "streaming service subscription", "music download",
+    "movie rental", "popcorn", "candy", "soda", "nachos",
+    "sports equipment", "gym membership", "fitness class",
+    "bowling", "mini golf", "laser tag", "escape room",
+    "karaoke", "arcade tokens", "casino chips",
+    "lottery ticket", "scratch card", "bingo supplies",
+    "party supplies", "balloons", "decorations",
+    "costume", "face paint", "photo booth rental",
+    "camera", "camera accessories", "binoculars",
+    "camping gear", "fishing equipment", "hiking gear",
+    "beach toys", "pool float", "inflatable boat",
+    "sports jersey", "team merchandise", "souvenir",
+    "travel guide", "map", "language learning software",
+    "cooking class", "dance class", "art class",
+    "craft kit", "scrapbooking supplies", "knitting supplies",
+    "gardening tools", "plant", "seed packet",
+    "pet toy", "aquarium supplies", "bird feeder"]):
+        return 'Entertainment'
+    elif any(AE in name for AE in[
+    "smartphone", "tablet", "laptop", "desktop computer", "monitor",
+    "printer", "scanner", "keyboard", "mouse", "speakers",
+    "headphones", "earbuds", "smart watch", "fitness tracker",
+    "television", "smart TV", "streaming device", "DVD player", "Blu-ray player",
+    "gaming console", "virtual reality headset", "camera", "camcorder",
+    "microphone", "router", "modem", "external hard drive", "USB drive",
+    "memory card", "power bank", "charger", "cable", "adapter",
+    "refrigerator", "freezer", "dishwasher", "washing machine", "dryer",
+    "oven", "stove", "microwave", "toaster", "toaster oven",
+    "coffee maker", "espresso machine", "blender", "food processor",
+    "stand mixer", "hand mixer", "slow cooker", "pressure cooker",
+    "air fryer", "rice cooker", "electric kettle", "waffle maker",
+    "vacuum cleaner", "robot vacuum", "steam mop", "iron",
+    "hair dryer", "straightener", "curling iron", "electric shaver",
+    "electric toothbrush", "air purifier", "humidifier", "dehumidifier",
+    "fan", "space heater", "air conditioner", "thermostat",
+    "smart speaker", "smart home hub", "security camera", "doorbell camera",
+    "smoke detector", "carbon monoxide detector", "light bulb", "smart light",
+    "electric blanket", "heated mattress pad", "white noise machine",
+    "clock radio", "calculator", "label maker", "paper shredder"]):
+        return 'A&E'
+    elif "tax" in name:
+        return "Tax"
     else:
-        return jsonify({"error": "No file uploaded"}), 400
-    
+        return 'Miscellaneous'
+
 @app.route('/submit-purchases', methods=['POST'])
 def submit_purchases():
     purchases = request.json['purchases']
-    user_id = "dummy_user_id"  # In a real app, you'd get this from the session
+    user_id = request.json['user_id']
+    
+    conn = sqlite3.connect('cashify.db')
+    c = conn.cursor()
+    
+    try:
+        # Get current budget
+        c.execute("SELECT budget FROM users WHERE id = ?", (user_id,))
+        current_budget = c.fetchone()[0]
+        
+        # Calculate total spent
+        total_spent = sum(purchase['amount'] for purchase in purchases)
+        
+        # Update budget
+        new_budget = current_budget - total_spent
+        c.execute("UPDATE users SET budget = ? WHERE id = ?", (new_budget, user_id))
+        
+        # Insert purchases
+        for purchase in purchases:
+            c.execute("INSERT INTO items (user_id, name, price, category) VALUES (?, ?, ?, ?)",
+                      (user_id, purchase['name'], purchase['amount'], purchase['category']))
+        
+        conn.commit()
+        
+        category_distribution = calculate_category_distribution(purchases)
+        
+        return jsonify({
+            "remainingBudget": new_budget,
+            "categoryDistribution": category_distribution
+        })
+    except sqlite3.Error as e:
+        conn.rollback()
+        return jsonify({"error": str(e)}), 400
+    finally:
+        conn.close()
 
-    # Update user's budget and purchases in the database
-    user = mongo.db.users.find_one_and_update(
-        {"_id": user_id},
-        {
-            "$push": {"purchases": {"$each": purchases}},
-            "$inc": {"budget": -sum(purchase['amount'] for purchase in purchases)}
-        },
-        return_document=True
-    )
-
-    if not user:
-        # If user doesn't exist, create a new one
-        user = {
-            "_id": user_id,
-            "budget": INITIAL_BUDGET - sum(purchase['amount'] for purchase in purchases),
-            "purchases": purchases
-        }
-        mongo.db.users.insert_one(user)
-
-    category_distribution = calculate_category_distribution(user['purchases'])
-
-    return jsonify({
-        "remainingBudget": user['budget'],
-        "categoryDistribution": category_distribution
-    })
-
-def extract_purchases(text):
-    # Implement your logic to extract purchases from the OCR text
-    # This is a placeholder implementation
-    return [
-        {"category": "Food", "amount": 100.0},
-        {"category": "Entertainment", "amount": 50.0},
-        {"category": "Shopping", "amount": 200.0},
-    ]
 
 def calculate_category_distribution(purchases):
     categories = {}
@@ -156,9 +272,28 @@ def calculate_category_distribution(purchases):
     total = sum(categories.values())
     return {category: (amount / total) * 100 for category, amount in categories.items()}
 
+@app.route('/update-budget', methods=['POST'])
+def update_budget():
+    data = request.json
+    user_id = data['user_id']
+    purchases = data['purchases']
+    curr_budget = data['budget']
 
-
-
+    total_price = 0
+    for purchase in purchases:
+        total_price += purchase['price']
+    new_budget = round(curr_budget - total_price, 2)
+    
+    conn = sqlite3.connect('cashify.db')
+    c = conn.cursor()
+    try:
+        c.execute("UPDATE users SET budget = ? WHERE id = ?", (new_budget, user_id))
+        conn.commit()
+        return jsonify({"message": "Budget updated successfully", "new_budget": new_budget}), 200
+    except sqlite3.Error as e:
+        return jsonify({"error": str(e)}), 400
+    finally:
+        conn.close()
 
 
 @app.route('/')
