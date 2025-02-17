@@ -1,6 +1,3 @@
-<!-- Find and Replace All [repo_name] -->
-<!-- Replace [product-screenshot] [product-url] -->
-<!-- Other Badgets https://naereen.github.io/badges/ -->
 [![Contributors][contributors-shield]][contributors-url]
 [![Forks][forks-shield]][forks-url]
 [![Stargazers][stars-shield]][stars-url]
