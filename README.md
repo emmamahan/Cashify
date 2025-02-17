@@ -53,7 +53,7 @@
 <!-- USAGE -->
 ## Usage
 
-Notecards and Sticky Notes
+<!--Notecards and Sticky Notes
 * Create them using left and right bottom buttons. The square logo creates sticky notes, the rectangle logo creates notecards.
 * Cards are their own objects that you can move around and assign text attributes to (unlimited lines).
 
@@ -65,6 +65,7 @@ Delete All
 
 <img width="404" alt="photo1" src="https://user-images.githubusercontent.com/54069717/71475768-ab01bf80-27af-11ea-9ee0-2596d734412f.png">
 <img width="411" alt="photo2" src="https://user-images.githubusercontent.com/54069717/71475773-ad641980-27af-11ea-8a5d-85aef9f07de4.png">
+-->
 
 <!-- COMMENTS -->
 ### Comments
@@ -73,6 +74,7 @@ Inset Comments Here
 
 ### Installation
 
+<!--
 1. Clone the repo
    ```sh
    git clone https://github.com/h1yung/Cashify.git
@@ -85,6 +87,7 @@ Inset Comments Here
 
 Distributed under the MIT License. See `LICENSE` for more information.
  -->
+
 
 <!-- CONTACT -->
 ## Contact
