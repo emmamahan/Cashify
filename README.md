@@ -48,7 +48,7 @@
 ## Description
 
 
-<img width="211" alt="titlescreen" src="https://user-images.githubusercontent.com/54069717/71475766-a806cf00-27af-11ea-9aff-4b0500bf2951.png">
+<!--<img width="211" alt="titlescreen" src="https://user-images.githubusercontent.com/54069717/71475766-a806cf00-27af-11ea-9aff-4b0500bf2951.png">-->
 
 <!-- USAGE -->
 ## Usage
