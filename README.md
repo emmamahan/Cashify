@@ -29,8 +29,6 @@
   </p>
 </p>
 
-<img width="959" alt="Example" src="https://github.com/user-attachments/assets/a5762669-28e3-4774-b2eb-dba302e98c5e" />
-
 <!-- TABLE OF CONTENTS -->
 <details open="open">
   <summary>Table of Contents</summary>
@@ -51,7 +49,9 @@
 
 <!-- DESCRIPTION -->
 ## Description
+<img width="959" alt="Example" src="https://github.com/user-attachments/assets/a5762669-28e3-4774-b2eb-dba302e98c5e" />
 
+A common problem college students and young adults face nowadays is managing their money. A big component of this problem is that they are unaware of what they are actually spending their money on, and how much of their monthly budget is being used each time they make a purchase. To help with financial literacy in young people, I developed Cashify so that each user can put in their monthly budget, then when they go on a shopping trip, they can scan their reciept into the app to categorize their totals. By doing this, the user can see how much money they have left to spend for the month, as well as have a visualization of what their biggest spending categories are.
 
 <!--<img width="211" alt="titlescreen" src="https://user-images.githubusercontent.com/54069717/71475766-a806cf00-27af-11ea-9aff-4b0500bf2951.png">-->
 
@@ -75,7 +75,7 @@ Delete All
 <!-- COMMENTS -->
 ### Comments
 
-Inset Comments Here
+Next steps would be to create a login function for the website, secure a domain, and set up certain tab buttons (such as About and Settings). I am also currently training an ML model to more accurately scan the reciepts instead of the pytesseract base model, as well as be able to categorize reciepts on its own without hardcoding items in each category.
 
 ### Installation
 
