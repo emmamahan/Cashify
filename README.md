@@ -26,6 +26,8 @@
   </p>
 </p>
 
+<img width="959" alt="Example" src="https://github.com/user-attachments/assets/a5762669-28e3-4774-b2eb-dba302e98c5e" />
+
 <!-- TABLE OF CONTENTS -->
 <details open="open">
   <summary>Table of Contents</summary>
