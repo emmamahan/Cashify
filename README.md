@@ -12,7 +12,7 @@
   </a>
 
   <h3 align="center">Cashify</h3>
-
+<img width="959" alt="Example" src="https://github.com/user-attachments/assets/a5762669-28e3-4774-b2eb-dba302e98c5e" />
   <p align="center">
     A financial planning web application that does the following:
     <ol>
