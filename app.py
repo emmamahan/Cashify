@@ -14,32 +14,32 @@ app.config["MONGO_URI"] = "mongodb://localhost:27017/cashify"
 INITIAL_BUDGET = 500
 
 # Database setup
-def init_db():
-    conn = sqlite3.connect('cashify.db')
-    c = conn.cursor()
-    c.execute('''CREATE TABLE IF NOT EXISTS users
-                 (id INTEGER PRIMARY KEY AUTOINCREMENT,
-                  username TEXT UNIQUE NOT NULL,
-                  password TEXT NOT NULL,
-                  budget REAL DEFAULT 500.0)''')
-    c.execute('''CREATE TABLE IF NOT EXISTS receipts
-                 (id INTEGER PRIMARY KEY AUTOINCREMENT,
-                  user_id INTEGER,
-                  date TEXT,
-                  total REAL,
-                  image_path TEXT,
-                  FOREIGN KEY (user_id) REFERENCES users(id))''')
-    c.execute('''CREATE TABLE IF NOT EXISTS items
-                 (id INTEGER PRIMARY KEY AUTOINCREMENT,
-                  receipt_id INTEGER,
-                  name TEXT,
-                  price REAL,
-                  category TEXT,
-                  FOREIGN KEY (receipt_id) REFERENCES receipts(id))''')
-    conn.commit()
-    conn.close()
+# def init_db():
+#     conn = sqlite3.connect('cashify.db')
+#     c = conn.cursor()
+#     c.execute('''CREATE TABLE IF NOT EXISTS users
+#                  (id INTEGER PRIMARY KEY AUTOINCREMENT,
+#                   username TEXT UNIQUE NOT NULL,
+#                   password TEXT NOT NULL,
+#                   budget REAL DEFAULT 500.0)''')
+#     c.execute('''CREATE TABLE IF NOT EXISTS receipts
+#                  (id INTEGER PRIMARY KEY AUTOINCREMENT,
+#                   user_id INTEGER,
+#                   date TEXT,
+#                   total REAL,
+#                   image_path TEXT,
+#                   FOREIGN KEY (user_id) REFERENCES users(id))''')
+#     c.execute('''CREATE TABLE IF NOT EXISTS items
+#                  (id INTEGER PRIMARY KEY AUTOINCREMENT,
+#                   receipt_id INTEGER,
+#                   name TEXT,
+#                   price REAL,
+#                   category TEXT,
+#                   FOREIGN KEY (receipt_id) REFERENCES receipts(id))''')
+#     conn.commit()
+#     conn.close()
 
-init_db()
+# init_db()
 
 # Helper functions
 def hash_password(password):
@@ -116,22 +116,22 @@ def categorize_item(name):
     "chocolate", "candy", "popcorn", "pretzels", "granola bars, burger, drinks", 
     "cajun shrine", "iepossible burser", "soft drinks", "ribeye cheesesteak foo roll" # this is temporary
     ]):
-        return 'Groceries'
+        return 'Food'
     elif any(household in name for household in [
-    "toilet paper", "paper towels", "tissues", "trash bags", "dish soap",
-    "hand soap", "laundry detergent", "fabric softener", "bleach",
-    "all-purpose cleaner", "glass cleaner", "floor cleaner", "sponges",
-    "scrub brushes", "mop", "broom", "dustpan", "vacuum bags",
-    "air freshener", "candles", "light bulbs", "batteries",
-    "aluminum foil", "plastic wrap", "sandwich bags", "freezer bags",
-    "food storage containers", "paper plates", "plastic cups", "napkins",
-    "toothpaste", "toothbrushes", "mouthwash", "dental floss",
-    "shampoo", "conditioner", "body wash", "bar soap", "lotion",
-    "deodorant", "razors", "shaving cream", "cotton swabs", "cotton balls",
-    "bandages", "first aid kit", "pain relievers", "allergy medicine",
-    "vitamins", "sunscreen", "insect repellent", "hand sanitizer",
-    "facial tissues", "toilet brush", "plunger", "shower curtain",
-    "laundry basket", "clothes hangers", "lint roller", "ironing board"]):
+    "screws", "nails", "wall anchors", "wood glue", "duct tape", "super glue",
+    "sandpaper", "paint", "paint brushes", "paint rollers", "drop cloth",
+    "caulk", "caulking gun", "plumbing tape", "PVC pipe", "pipe wrench",
+    "hammer", "screwdriver", "drill bits", "measuring tape", "level",
+    "utility knife", "putty knife", "spackle", "electrical tape", "light bulbs",
+    "extension cords", "outlet covers", "door hinges", "cabinet knobs",
+    "brackets", "hooks", "wood stain", "varnish", "sealant", "tiles",
+    "grout", "adhesive", "floor protectors", "all-purpose cleaner", 
+    "glass cleaner", "disinfectant wipes", "bleach", "laundry detergent", 
+    "fabric softener", "dryer sheets", "stain remover", "dish soap", 
+    "sponges", "scrub brushes", "mop", "broom", "dustpan", "vacuum bags",
+    "garbage bags", "paper towels", "microfiber cloths", "toilet cleaner",
+    "drain cleaner", "air freshener", "oven cleaner", "stainless steel cleaner",
+    "wood polish", "carpet cleaner", "rubber gloves", "bucket"]):
         return 'Household'
     elif any(clothing in name for clothing in [
     "t-shirt", "shirt", "blouse", "sweater", "cardigan", "hoodie",
@@ -232,7 +232,7 @@ def submit_purchases():
     
     try:
         # Get current budget
-        c.execute("SELECT budget FROM users WHERE id = ?", (user_id,))
+        c.execute("SELECT budget FROM users WHERE user_id = ?", (user_id,))
         current_budget = c.fetchone()[0]
         
         # Calculate total spent
@@ -240,7 +240,7 @@ def submit_purchases():
         
         # Update budget
         new_budget = current_budget - total_spent
-        c.execute("UPDATE users SET budget = ? WHERE id = ?", (new_budget, user_id))
+        c.execute("UPDATE users SET budget = ? WHERE user_id = ?", (new_budget, user_id))
         
         # Insert purchases
         for purchase in purchases:
@@ -272,28 +272,72 @@ def calculate_category_distribution(purchases):
     total = sum(categories.values())
     return {category: (amount / total) * 100 for category, amount in categories.items()}
 
-@app.route('/update-budget', methods=['POST'])
-def update_budget():
+
+
+@app.route('/get_budget', methods=['POST'])
+def get_budget():
     data = request.json
     user_id = data['user_id']
-    purchases = data['purchases']
-    curr_budget = data['budget']
-
-    total_price = 0
-    for purchase in purchases:
-        total_price += purchase['price']
-    new_budget = round(curr_budget - total_price, 2)
     
     conn = sqlite3.connect('cashify.db')
     c = conn.cursor()
     try:
-        c.execute("UPDATE users SET budget = ? WHERE id = ?", (new_budget, user_id))
-        conn.commit()
-        return jsonify({"message": "Budget updated successfully", "new_budget": new_budget}), 200
+        print(user_id)
+        c.execute("SELECT budget FROM users WHERE user_id = ?", (user_id, ))
+        current_budget = c.fetchone()[0]
+        return jsonify({"curr_budget": current_budget}), 200
     except sqlite3.Error as e:
         return jsonify({"error": str(e)}), 400
     finally:
         conn.close()
+
+    
+
+@app.route('/update-budget', methods=['POST'])
+def update_budget():
+    data = request.json
+    print(data)
+    user_id = 1
+
+    if "purchases" in data:
+        user_id = data['user_id']
+        purchases = data['purchases']
+        
+    
+        total_price = 0
+        for purchase in purchases:
+            total_price += purchase['price']
+    
+        conn = sqlite3.connect('cashify.db')
+        c = conn.cursor()
+        try:
+            c.execute("SELECT budget FROM users WHERE user_id = ?", (user_id,))
+            curr_budget = c.fetchone()[0]
+            new_budget = round(curr_budget - total_price, 2)
+            print("DONE")
+            c.execute("UPDATE users SET budget = ? WHERE user_id = ?", (new_budget, user_id))
+            conn.commit()
+            return jsonify({"message": "Budget updated successfully", "new_budget": new_budget}), 200
+        except sqlite3.Error as e:
+            return jsonify({"error": str(e)}), 400
+        finally:
+            conn.close()
+
+    else:
+        budget = data["budget"]
+
+        conn = sqlite3.connect('cashify.db')
+        c = conn.cursor()
+        try:
+            c.execute("UPDATE users SET budget = ? WHERE user_id = ?", (budget, user_id))
+            conn.commit()
+            return jsonify({"message": "Budget updated successfully", "new_budget": budget}), 200
+        except sqlite3.Error as e:
+            return jsonify({"error": str(e)}), 400
+        finally:
+            conn.close()
+
+
 
 
 @app.route('/')
@@ -328,38 +372,39 @@ def forgot_password():
 
     return jsonify({'message': 'Password reset link sent to your email'}), 200
 
-@app.route('/signup', methods=['POST'])
-def signup():
-    data = request.json
-    username = data['username']
-    password = hash_password(data['password'])
+
+# @app.route('/signup', methods=['POST'])
+# def signup():
+#     data = request.json
+#     username = data['username']
+#     password = hash_password(data['password'])
     
-    conn = sqlite3.connect('cashify.db')
-    c = conn.cursor()
-    try:
-        c.execute("INSERT INTO users (username, password) VALUES (?, ?)", (username, password))
-        conn.commit()
-        return jsonify({"message": "User registered successfully"}), 201
-    except sqlite3.IntegrityError:
-        return jsonify({"error": "Username already exists"}), 400
-    finally:
-        conn.close()
-@app.route('/login', methods=['POST'])
-def login():
-    data = request.json
-    username = data['username']
-    password = hash_password(data['password'])
+#     conn = sqlite3.connect('cashify.db')
+#     c = conn.cursor()
+#     try:
+#         c.execute("INSERT INTO users (username, password) VALUES (?, ?)", (username, password))
+#         conn.commit()
+#         return jsonify({"message": "User registered successfully"}), 201
+#     except sqlite3.IntegrityError:
+#         return jsonify({"error": "Username already exists"}), 400
+#     finally:
+#         conn.close()
+# @app.route('/login', methods=['POST'])
+# def login():
+#     data = request.json
+#     username = data['username']
+#     password = hash_password(data['password'])
     
-    conn = sqlite3.connect('cashify.db')
-    c = conn.cursor()
-    c.execute("SELECT * FROM users WHERE username = ? AND password = ?", (username, password))
-    user = c.fetchone()
-    conn.close()
+#     conn = sqlite3.connect('cashify.db')
+#     c = conn.cursor()
+#     c.execute("SELECT * FROM users WHERE username = ? AND password = ?", (username, password))
+#     user = c.fetchone()
+#     conn.close()
     
-    if user:
-        return jsonify({"message": "Login successful", "user_id": user[0]}), 200
-    else:
-        return jsonify({"error": "Invalid credentials"}), 401
+#     if user:
+#         return jsonify({"message": "Login successful", "user_id": user[0]}), 200
+#     else:
+#         return jsonify({"error": "Invalid credentials"}), 401
 
 
 if __name__ == '__main__':

@@ -7,15 +7,15 @@
     <script src="https://cdn.tailwindcss.com"></script>
 </head>
 
-<body class="flex flex-col h-full min-h-screen bg-[#fb9ebd]">
-
+<body class="flex flex-col h-full min-h-screen bg-[##FFF6FA]">
     <!-- Header -->
     <div class="py-4 bg-[#180e12] flex items-center px-8">
-        <div class="text-[#f16b98] text-2xl md:text-3xl lg:text-4xl font-bold font-['Kantumruy Pro']"><i>Cashify</i></div>
-        <div class="ml-auto flex space-x-6 md:space-x-8 text-[#f16b98] text-lg md:text-2xl lg:text-3xl font-bold font-['Harmattan']">
-            <div>Settings</div>
-            <div>Budget Planner</div>
-            <div>Receipts</div>
+        <img src="{{ url_for('static', filename='images/c.png') }}" alt="Logo" class="w-auto h-auto max-w-9 max-h-9 p-0 mr-4">
+        <div class="text-white text-2xl md:text-3xl lg:text-4xl font-bold font-['Kantumruy Pro']"><i>Cashify</i></div>
+        <div class="ml-auto flex space-x-6 md:space-x-8 text-white text-lg md:text-2xl lg:text-3xl font-bold font-['Harmattan']">
+            <button class="openModalBtn text-white text-lg md:text-2xl lg:text-3xl font-bold font-['Harmattan'] hover:bg-white hover:text-[#180e12] px-2 py-1 rounded transition duration-300 ease-in-out">Settings</button>
+            <button class="openModalBtn text-white text-lg md:text-2xl lg:text-3xl font-bold font-['Harmattan'] hover:bg-white hover:text-[#180e12] px-2 py-1 rounded transition duration-300 ease-in-out">Budget Planner</button>
+            <button class="openModalBtn text-white text-lg md:text-2xl lg:text-3xl font-bold font-['Harmattan'] hover:bg-white hover:text-[#180e12] px-2 py-1 rounded transition duration-300 ease-in-out">Receipts</button>
         </div>
     </div>
 
@@ -25,25 +25,28 @@
             <tbody class="h-full">
                 <tr class="h-full">
                     <!-- Left Section (60%) -->
-                    <td class="w-3/5 bg-[#F5DADF] shadow-lg h-full align-top p-6">
+                    <td class="w-3/5 bg-[#FFF6FA] shadow-lg h-full align-top p-0">
                         <table class="w-full h-full">
                             <thead>
                                 <tr class="text-center">
-                                    <th class="bg-[#FFFF] w-1/2 py-2 text-[#f16b98] text-xl font-bold font-['Kantumruy Pro']">Trip Total</th>
-                                    <th class="bg-[#f6a9c3] w-1/2 py-2 text-[#f6fffd] text-xl font-bold font-['Kantumruy Pro']">Monthly Averages</th>
+                                    <span class="border-b w-3/4"></span><th class="bg-[#FFF6FA] w-1/3 py-4 text-[#89023E] text-3xl font-bold font-['Harmattan']"><span class="border-b border-[#89023E] px-8 py-2" 
+                                    style="border-bottom-width:4px;">Trip Total</span></th>
+                                    <th class="bg-[#FFC4E0] w-1/2 py-4 text-[#89023E] text-3xl font-bold font-['Harmattan']"><span class="border-b border-[#89023E] px-8 py-2" 
+                                    style="border-bottom-width:4px;">Monthly Averages</span></th>
                                 </tr>
                             </thead>
                             <tbody class="h-full">
                                 <tr class="h-full">
                                     <!--Category Totals-->
-                                    <td class="bg-[#FFFF] w-1/2 h-full align-top px-6">
+                                    <td class="bg-[#FFF6FA] w-1/2 h-full align-top -py-2 px-6">
                                         <ul id="category-totals" class="text-lg mt-2 space-y-2"></ul>
                                     </td>
                                     <!-- Pie Chart -->
-                                    <td class="bg-[#f6a9c3] w-1/2 h-full align-top relative">
+                                    <td class="bg-[#FFC4E0] w-1/2 h-full align-top relative">
                                         <div class="absolute inset-0 flex items-center justify-center">
                                             <div class="w-[90%] max-w-[300px] aspect-square rounded-full" 
-                                                 style="background-image: conic-gradient(pink 70deg, #EA638C 0 235deg, #89023E 0);">
+                                                style="background-image: conic-gradient(pink 0deg, #EA638C 0 0deg, #89023E 0);">
+                                                <div class="pie-chart-overlay" style="transform: rotate(0deg);"></div>
                                             </div>
                                         </div>
                                     </td>
@@ -51,7 +54,6 @@
                             </tbody>
                         </table>
                     </td>
-                    
                     <!-- Right Section (40%) -->
                     <!--Mock Recipt-->
                     <td class="w-2/5 bg-[#f6fffd] shadow-lg h-full align-top p-6 text-center">
@@ -69,10 +71,10 @@
                         <div class="text-[#1e1d1d] text-lg font-normal font-['Jaldi']">Budget Remaining:</div>
                         <!-- Flipping Number Display -->
                         <div class="flex justify-center items-center text-4xl font-bold mt-2">
-                            <span id="flip-number" class="relative inline-block w-[250px] h-[50px] text-center overflow-hidden">
-                                <input type="number" id="budgetInput" class="block absolute inset-0 w-full h-full text-center 
-                                bg-transparent border-none outline-none" placeholder="Enter Budget">
-                            </span>
+                                <span id="flip-number" class="relative inline-block w-[250px] h-[50px] text-center overflow-hidden">
+                                    <div id="currBudget" class="block inset-0 w-full h-full text-center 
+                                    bg-transparent border-none outline-none"></div>
+                                </span>
                         </div>                        
                         <div class="flex flex-col items-center">
                             <div class="border-t border-black w-full mt-4 mb-6"></div>
@@ -92,12 +94,17 @@
     </div>
 
     <!-- Footer -->
-    <div class="py-3 bg-[#180e12] flex flex-col justify-center text-[#f16b98] px-8">
-        <div class="flex justify-end gap-4 md:gap-8 text-lg font-bold font-['Harmattan']">
-            <div>About</div>
-            <div>Privacy Policy</div>
-            <div>Licensing</div>
-            <div>Contact</div>
+    <div class="py-3 bg-[#45011F] flex flex-col justify-center text-white px-8">
+        <div class="flex justify-between">
+            <div class="flex ml-0">
+                <img src="{{ url_for('static', filename='images/c.png') }}" alt="Logo" class="w-auto h-auto max-w-7 max-h-7 p-0 mr-4">
+            </div>
+            <div class="flex justify-end gap-4 md:gap-8 text-lg font-bold font-['Harmattan']">
+                <button class="openModalBtn hover:bg-white hover:text-[#180e12] rounded transition duration-300 ease-in-out">About</button>
+                <button class="openModalBtn hover:bg-white hover:text-[#180e12] rounded transition duration-300 ease-in-out">Privacy</button>
+                <button class="openModalBtn hover:bg-white hover:text-[#180e12] rounded transition duration-300 ease-in-out">Licensing</button>
+                <button class="openModalBtn hover:bg-white hover:text-[#180e12] rounded transition duration-300 ease-in-out">Contact</button>
+            </div>
         </div>
         <div class="w-full border-t border-[#f16b98] mt-2"></div> 
         <div class="mt-2 text-center text-sm md:text-base font-['Harmattan']">&copy 2025 Cashify. All Rights Reserved.</div>
@@ -106,3 +113,154 @@
 <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
 </body>
 </html>
+
+<!-- SETTINGS PAGE -->
+<div id="settings" class="modal fixed inset-0 bg-gray-600 bg-opacity-50 overflow-y-auto h-full w-full hidden">
+    <div class="relative top-20 mx-auto p-5 border w-96 shadow-lg rounded-md bg-white">
+        <div class="mt-3 text-center">
+            <h3 class="text-lg leading-6 font-medium text-gray-900">Settings</h3>
+            <div class="mt-2 px-7 py-3">
+                <div class="flex justify-center items-center text-4xl font-bold mt-2">
+                    <span id="flip-number" class="relative inline-block w-[250px] h-[50px] text-center overflow-hidden">
+                        <input type="number" id="budgetInput" class="block absolute inset-0 w-full h-full text-center 
+                            bg-transparent border-none outline-none" placeholder="Enter Budget">
+                    </span>
+                </div> 
+            </div>
+            <div class="items-center px-4 py-3">
+                <button id="submit-budget" class="px-4 py-2 bg-blue-500 text-white text-base font-medium rounded-md w-full shadow-sm hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-blue-300 mb-3">
+                    Submit Budget
+                </button>
+                <button id="close-settings-modal" class="closeModalBtn px-4 py-2 bg-gray-500 text-white text-base font-medium rounded-md w-full shadow-sm hover:bg-gray-700 focus:outline-none focus:ring-2 focus:ring-gray-300">
+                    Close
+                </button>
+            </div>
+        </div>
+    </div>
+</div>
+
+
+<!-- BUDGET PLANNER -->
+<div id="budget-planner" class="modal fixed inset-0 bg-gray-600 bg-opacity-50 overflow-y-auto h-full w-full hidden">
+    <div class="relative top-20 mx-auto p-5 border w-96 shadow-lg rounded-md bg-white">
+        <div class="mt-3 text-center">
+            <h3 class="text-lg leading-6 font-medium text-gray-900">Budget Planner</h3>
+            <div class="mt-2 px-7 py-3">
+                <p class="text-sm text-gray-500">
+                    save money
+                </p>
+            </div>
+            <div class="items-center px-4 py-3">
+                <button id="close-budget-planner-modal" class="closeModalBtn px-4 py-2 bg-gray-500 text-white text-base font-medium rounded-md w-full shadow-sm hover:bg-gray-700 focus:outline-none focus:ring-2 focus:ring-gray-300">
+                    Close
+                </button>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- RECEIPTS -->
+<div id="receipts" class="modal fixed inset-0 bg-gray-600 bg-opacity-50 overflow-y-auto h-full w-full hidden">
+    <div class="relative top-20 mx-auto p-5 border w-96 shadow-lg rounded-md bg-white">
+        <div class="mt-3 text-center">
+            <h3 class="text-lg leading-6 font-medium text-gray-900">Past Receipts</h3>
+            <div class="mt-2 px-7 py-3">
+                <p class="text-sm text-gray-500">
+                    jumpscare!
+                </p>
+            </div>
+            <div class="items-center px-4 py-3">
+                <button id="close-receipts-modal" class="closeModalBtn px-4 py-2 bg-gray-500 text-white text-base font-medium rounded-md w-full shadow-sm hover:bg-gray-700 focus:outline-none focus:ring-2 focus:ring-gray-300">
+                    Close
+                </button>
+            </div>
+        </div>
+    </div>
+</div>
+
+
+<!-- ABOUT -->
+<div id="about" class="modal fixed inset-0 bg-gray-600 bg-opacity-50 overflow-y-auto h-full w-full hidden">
+    <div class="relative top-20 mx-auto p-5 border w-96 shadow-lg rounded-md bg-white">
+        <div class="mt-3 text-center">
+            <h3 class="text-lg leading-6 font-medium text-gray-900">About</h3>
+            <div class="mt-2 px-7 py-3">
+                <p class="text-sm text-gray-500">
+                    jumpscare!
+                </p>
+            </div>
+            <div class="items-center px-4 py-3">
+                <button id="close-about-modal" class="closeModalBtn px-4 py-2 bg-gray-500 text-white text-base font-medium rounded-md w-full shadow-sm hover:bg-gray-700 focus:outline-none focus:ring-2 focus:ring-gray-300">
+                    Close
+                </button>
+            </div>
+        </div>
+    </div>
+</div>
+
+
+
+
+<!-- PRIVACY -->
+<div id="privacy" class="modal fixed inset-0 bg-gray-600 bg-opacity-50 overflow-y-auto h-full w-full hidden">
+    <div class="relative top-20 mx-auto p-5 border w-96 shadow-lg rounded-md bg-white">
+        <div class="mt-3 text-center">
+            <h3 class="text-lg leading-6 font-medium text-gray-900">Privacy</h3>
+            <div class="mt-2 px-7 py-3">
+                <p class="text-sm text-gray-500">
+                    jumpscare!
+                </p>
+            </div>
+            <div class="items-center px-4 py-3">
+                <button id="close-privacy-modal" class="closeModalBtn px-4 py-2 bg-gray-500 text-white text-base font-medium rounded-md w-full shadow-sm hover:bg-gray-700 focus:outline-none focus:ring-2 focus:ring-gray-300">
+                    Close
+                </button>
+            </div>
+        </div>
+    </div>
+</div>
+
+
+
+
+<!-- LICENSING -->
+<div id="licensing" class="modal fixed inset-0 bg-gray-600 bg-opacity-50 overflow-y-auto h-full w-full hidden">
+    <div class="relative top-20 mx-auto p-5 border w-96 shadow-lg rounded-md bg-white">
+        <div class="mt-3 text-center">
+            <h3 class="text-lg leading-6 font-medium text-gray-900">Licensing</h3>
+            <div class="mt-2 px-7 py-3">
+                <p class="text-sm text-gray-500">
+                    jumpscare!
+                </p>
+            </div>
+            <div class="items-center px-4 py-3">
+                <button id="close-licensing-modal" class="closeModalBtn px-4 py-2 bg-gray-500 text-white text-base font-medium rounded-md w-full shadow-sm hover:bg-gray-700 focus:outline-none focus:ring-2 focus:ring-gray-300">
+                    Close
+                </button>
+            </div>
+        </div>
+    </div>
+</div>
+
+
+
+
+
+<!-- CONTACT -->
+<div id="contact" class="modal fixed inset-0 bg-gray-600 bg-opacity-50 overflow-y-auto h-full w-full hidden">
+    <div class="relative top-20 mx-auto p-5 border w-96 shadow-lg rounded-md bg-white">
+        <div class="mt-3 text-center">
+            <h3 class="text-lg leading-6 font-medium text-gray-900">Contact</h3>
+            <div class="mt-2 px-7 py-3">
+                <p class="text-sm text-gray-500">
+                    jumpscare!
+                </p>
+            </div>
+            <div class="items-center px-4 py-3">
+                <button id="close-contact-modal" class="closeModalBtn px-4 py-2 bg-gray-500 text-white text-base font-medium rounded-md w-full shadow-sm hover:bg-gray-700 focus:outline-none focus:ring-2 focus:ring-gray-300">
+                    Close
+                </button>
+            </div>
+        </div>
+    </div>
+</div>

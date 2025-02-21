@@ -1,0 +1,21 @@
+sqlite3 cashify.db
+CREATE TABLE users (
+    user_id INTEGER PRIMARY KEY,
+    budget REAL
+);
+
+
+
+
+INSERT INTO users (user_id, budget)
+VALUES (1, 500);
+
+CREATE TABLE items (
+    id INTEGER PRIMARY KEY AUTOINCREMENT,
+    user_id INTEGER NOT NULL,
+    name TEXT NOT NULL,
+    price REAL NOT NULL,
+    category TEXT NOT NULL
+);
+
+.quit
