@@ -4,15 +4,23 @@
 [![Issues][issues-shield]][issues-url]
 [![LinkedIn][linkedin-shield]][linkedin-url]
 
-<!-- PROJECT LOGO -->
+<!-- PROJECT LOGO 
 <br />
+<p align="center">
+  <a href="https://github.com/emmamahan/Cashify">
+    <!-- <img src="https://user-images.githubusercontent.com/54069717/71475766-a806cf00-27af-11ea-9aff-4b0500bf2951.png" alt="Logo" width="80" height="80"> 
+  </a>
+	![c](https://github.com/user-attachments/assets/08465275-11d4-42db-8884-198c2b8f60c4) -->
+
+
+  <h3 align="center">Cashify</h3> 
+  <br />
 <p align="center">
   <a href="https://github.com/emmamahan/Cashify">
     <!-- <img src="https://user-images.githubusercontent.com/54069717/71475766-a806cf00-27af-11ea-9aff-4b0500bf2951.png" alt="Logo" width="80" height="80"> -->
   </a>
-
-  <h3 align="center">Cashify</h3>
-<img width="959" alt="Example" src="https://github.com/user-attachments/assets/a5762669-28e3-4774-b2eb-dba302e98c5e" />
+	![c](https://github.com/user-attachments/assets/08465275-11d4-42db-8884-198c2b8f60c4)
+  
   <p align="center">
     A financial planning web application that does the following:
     <ol>
